@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Notas</title>
+</head>
+<body>
+    <h1>Notas</h1>
+
+    {% for nota in notas %}
+        <p>
+            <strong>{{ nota['Titulo'] }}</strong>  
+            <a href="/nota/{{ nota['Id'] }}">Ver Detalles</a>
+        </p>
+    {% endfor %}
+
+    <h2>Agregar Nota</h2>
+    <form action="{{ url_for('agregar_nota') }}" method="POST">
+        <label for="titulo">Título:</label>
+        <input type="text" name="titulo" required>
+
+        <label for="texto">Contenido:</label>
+        <textarea name="texto" required></textarea>
+
+        <button type="submit">Agregar Nota</button>
+    </form>
+</body>
+</html>
