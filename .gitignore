@@ -1,0 +1,29 @@
+# 🔹 Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 Entorno virtual (Evita subir dependencias innecesarias)
+entorno/
+env/
+
+# 🔹 Archivos de configuración y claves sensibles
+*.env
+config.json
+secrets.json
+
+# 🔹 Archivos de base de datos locales
+*.sqlite3
+*.db
+
+# 🔹 Configuración de logs y depuración
+*.log
+debug.log
+
+# 🔹 Configuración de Visual Studio Code
+.vscode/
+
+# 🔹 Archivos del sistema operativo (Mac y Windows)
+.DS_Store
+Thumbs.db
