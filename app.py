@@ -104,6 +104,26 @@ def obtener_todas_las_notas():
     
     return jsonify(notas)  # Devolver todo en formato JSON
 
+#ruta para eliminar nota
+@app.route("/eliminar_nota/<int:id>", methods=["DELETE"])
+def eliminar_nota(id):
+    conexion = mysql.connection
+    cursor = conexion.cursor()
+
+    # Verifica si la nota existe
+    cursor.execute("SELECT * FROM notas WHERE Id = %s", (id,))
+    nota = cursor.fetchone()
+
+    if not nota:
+        cursor.close()
+        return jsonify({"error": "Nota no encontrada"}), 404
+
+    # Si la nota existe, elimínala
+    cursor.execute("DELETE FROM notas WHERE Id = %s", (id,))
+    conexion.commit()
+    cursor.close()
+
+    return jsonify({"mensaje": f"Nota con ID {id} eliminada correctamente"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
