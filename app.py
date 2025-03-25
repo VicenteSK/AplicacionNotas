@@ -14,7 +14,7 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"  # Cambié la configuración aqu�
 mysql = MySQL(app)
 
 # Ruta para mostrar todas las notas
-@app.route("/")
+@app.route("/notas")
 def home():
     conexion = mysql.connection
     cursor = conexion.cursor()  # Ahora se usa DictCursor por la configuración
@@ -124,6 +124,48 @@ def eliminar_nota(id):
     cursor.close()
 
     return jsonify({"mensaje": f"Nota con ID {id} eliminada correctamente"}), 200
+
+# Ruta para mostrar todos los usuarios
+@app.route("/usuarios", methods=["GET"])
+def obtener_usuarios():
+    conexion = mysql.connection
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT * FROM usuario")  # Asegúrate de que la tabla se llama "usuario"
+    usuarios = cursor.fetchall()
+    cursor.close()
+
+    return jsonify(usuarios)  # Retorna los usuarios en formato JSON
+
+    # Ruta para agregar un nuevo usuario
+# Ruta para agregar un nuevo usuario
+@app.route("/agregar_usuario", methods=["POST"])
+def agregar_usuario():
+    # Verificar si la solicitud contiene JSON
+    if not request.is_json:
+        return jsonify({"error": "La solicitud debe ser en formato JSON"}), 400
+
+    try:
+        # Obtener datos del JSON
+        data = request.get_json()
+        username = data.get("username")
+        contraseña = data.get("contraseña")
+
+        if not username or not contraseña:
+            return jsonify({"error": "Los campos 'username' y 'contraseña' son requeridos"}), 400
+
+        # Conectar a MySQL e insertar los datos
+        conexion = mysql.connection
+        cursor = conexion.cursor()
+        cursor.execute("INSERT INTO usuario (username, contraseña) VALUES (%s, %s)", (username, contraseña))
+        conexion.commit()
+        cursor.close()
+
+        return jsonify({"mensaje": "Usuario agregado con éxito"}), 201
+
+    except Exception as e:
+        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
