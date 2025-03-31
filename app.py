@@ -137,7 +137,25 @@ def obtener_usuarios():
 
     return jsonify(usuarios)  # Retorna los usuarios en formato JSON
 
-    # Ruta para agregar un nuevo usuario
+
+#ruta para obtener un usuario por ID
+@app.route("/usuarios/<int:id>", methods=["GET"])
+def obtener_usuario(id):
+    try:
+        conexion = mysql.connection
+        cursor = conexion.cursor()
+        cursor.execute("SELECT * FROM usuario WHERE id = %s", (id,))
+        usuario = cursor.fetchone()
+        cursor.close()
+
+        if usuario:
+            return jsonify(usuario), 200
+        else:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500
+
+
 # Ruta para agregar un nuevo usuario
 @app.route("/agregar_usuario", methods=["POST"])
 def agregar_usuario():
@@ -165,6 +183,45 @@ def agregar_usuario():
 
     except Exception as e:
         return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500
+    
+
+# Actualizar usuario
+@app.route("/usuarios/<int:id>", methods=["PUT"])
+def actualizar_usuario(id):
+    if not request.is_json:
+        return jsonify({"error": "La solicitud debe ser en formato JSON"}), 400
+
+    try:
+        data = request.get_json()
+        username = data.get("username")
+        contraseña = data.get("contraseña")
+
+        if not username or not contraseña:
+            return jsonify({"error": "Los campos 'username' y 'contraseña' son requeridos"}), 400
+
+        conexion = mysql.connection
+        cursor = conexion.cursor()
+        cursor.execute("UPDATE usuario SET username = %s, contraseña = %s WHERE id = %s", (username, contraseña, id))
+        conexion.commit()
+        cursor.close()
+
+        return jsonify({"mensaje": "Usuario actualizado con éxito"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500
+
+# Eliminar usuario
+@app.route("/usuarios/<int:id>", methods=["DELETE"])
+def eliminar_usuario(id):
+    try:
+        conexion = mysql.connection
+        cursor = conexion.cursor()
+        cursor.execute("DELETE FROM usuario WHERE id = %s", (id,))
+        conexion.commit()
+        cursor.close()
+
+        return jsonify({"mensaje": "Usuario eliminado correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500    
 
 
 if __name__ == "__main__":
