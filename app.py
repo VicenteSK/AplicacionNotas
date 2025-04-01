@@ -221,7 +221,49 @@ def eliminar_usuario(id):
 
         return jsonify({"mensaje": "Usuario eliminado correctamente"}), 200
     except Exception as e:
-        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500    
+        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500   
+    
+    #ruta para ver notas con usuario
+@app.route('/notas_usuario', methods=['GET'])
+def obtener_notas():
+    conexion = mysql.connection  # Conectar a MySQL
+    cursor = conexion.cursor()  # Crear cursor correctamente
+
+    query = """
+        SELECT notas.id, usuario.username, notas.titulo, notas.texto
+        FROM notas
+        INNER JOIN usuario ON notas.id_usuario = usuario.id
+    """
+    cursor.execute(query)
+    notas = cursor.fetchall()  # Obtener todas las filas
+    cursor.close()
+
+    return jsonify(notas)  # Devolver JSON con los datos    
+
+
+#ruta para obtener notas_usuario por ID
+@app.route('/notas_usuario/<int:id>', methods=['GET'])
+def obtener_notas_por_usuario(id):
+    conexion = mysql.connection  # Conectar a MySQL
+    cursor = conexion.cursor()  # Crear cursor
+
+    # Consulta para obtener notas del usuario con el ID especificado
+    query = """
+        SELECT notas.id,usuario.username, notas.titulo, notas.texto
+        FROM notas
+        INNER JOIN usuario ON notas.id_usuario = usuario.id
+        WHERE usuario.id = %s
+    """
+    cursor.execute(query, (id,))
+    notas = cursor.fetchall()  # Obtener todas las notas del usuario
+
+    cursor.close()
+
+    # Si el usuario tiene notas, las retorna, sino devuelve un mensaje
+    if notas:
+        return jsonify(notas)  # Devolver notas como JSON
+    else:
+        return jsonify({"error": "No se encontraron notas para este usuario"}), 404
 
 
 if __name__ == "__main__":
