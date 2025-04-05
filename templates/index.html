@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Notas</title>
+    <title>Lista de Notas y Usuarios</title>
 </head>
 <body>
     <h1>Notas</h1>
@@ -16,9 +16,28 @@
 
     <h2>Agregar Nota</h2>
     <form method="POST" action="/agregar_nota">
-        <input type="text" name="titulo" placeholder="Título de la nota">
-        <textarea name="texto" placeholder="Contenido de la nota"></textarea>
+        <input type="text" name="titulo" placeholder="Título de la nota" required>
+        <textarea name="texto" placeholder="Contenido de la nota" required></textarea>
         <button type="submit">Guardar Nota</button>
+    </form>
+
+    <hr>
+
+    <h1>Usuarios</h1>
+
+    <h1>Usuarios</h1>
+    {% for usuario in usuarios %}
+        <p>
+            <strong>{{ usuario['username'] }}</strong>
+            <a href="/usuario/{{ usuario['id'] }}">Ver Detalles</a>
+        </p>
+{% endfor %}
+
+    <h2>Agregar Usuario</h2>
+    <form method="POST" action="/agregar_usuario">
+        <input type="text" name="username" placeholder="Nombre de usuario" required>
+        <input type="password" name="contraseña" placeholder="Contraseña" required>
+        <button type="submit">Guardar Usuario</button>
     </form>
 </body>
 </html>

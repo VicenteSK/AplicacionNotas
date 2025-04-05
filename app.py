@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_mysqldb import MySQL
 from controllers.nota_controller import NotaController
+from controllers.usuarios_controller import UsuarioController
 
 app = Flask(__name__)
 
@@ -55,5 +56,34 @@ def obtener_notas_usuario_por_id(id):
 def actualizar_nota(id):
     return nota_controller.actualizar_nota(id)
 
-if __name__ == "__main__":
+
+
+# Instancia del controlador
+usuario_controller = UsuarioController(mysql)
+
+# Rutas para usuarios
+@app.route('/usuarios', methods=['GET'])
+def obtener_usuarios():
+    return usuario_controller.listar_usuarios()
+
+@app.route('/usuarios/<int:id>', methods=['GET'])
+def obtener_usuario(id):
+    return usuario_controller.obtener_usuario(id)
+
+@app.route('/usuarios', methods=['POST'])
+def agregar_usuario():
+    return usuario_controller.agregar_usuario()
+
+@app.route('/usuarios/<int:id>', methods=['DELETE'])
+def eliminar_usuario(id):
+    return usuario_controller.eliminar_usuario(id)
+
+# Si querés agregar actualizar:
+@app.route('/usuarios/<int:id>', methods=['PUT'])
+def actualizar_usuario(id):
+    return usuario_controller.actualizar_usuario(id)
+
+# Ejecutar app
+if __name__ == '__main__':
     app.run(debug=True)
+
