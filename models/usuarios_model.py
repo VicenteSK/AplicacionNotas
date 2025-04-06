@@ -34,6 +34,16 @@ class UsuarioModel:
         self.mysql.connection.commit()
         cursor.close()
 
+    def obtener_usuario_por_id(self, id):
+        try:
+            cursor = self.mysql.connection.cursor()
+            cursor.execute("SELECT * FROM usuario WHERE id = %s", (id,))
+            resultado = cursor.fetchone()
+            cursor.close()
+            return resultado
+        except Exception as e:
+            raise Exception(str(e))
+
     def eliminar_usuario(self, id):
         cursor = self.mysql.connection.cursor()
         cursor.execute("DELETE FROM usuario WHERE id = %s", (id,))
