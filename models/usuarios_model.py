@@ -18,12 +18,6 @@ class UsuarioModel:
         cursor.close()
         return usuarios
 
-    def obtener_por_id(self, id):
-        cursor = self.mysql.connection.cursor()
-        cursor.execute("SELECT * FROM usuario WHERE id = %s", (id,))
-        usuario = cursor.fetchone()
-        cursor.close()
-        return usuario
 
     def agregar_usuario(self, username, contraseña):
         cursor = self.mysql.connection.cursor()

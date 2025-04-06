@@ -24,7 +24,7 @@ class UsuarioController:
 
     def obtener_usuario(self, id):
         try:
-            usuario = self.modelo.obtener_por_id(id)
+            usuario = self.modelo.obtener_usuario_por_id(id)
             if usuario:
                 return jsonify(usuario), 200
             return jsonify({"error": "No se encontró el usuario"}), 404
